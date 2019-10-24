@@ -14,15 +14,16 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
+    
     let OW_URL_BASE = "https://api.openweathermap.org/data/2.5/weather?lang=es&units=metric&appid=1adb13e22f23c3de1ca37f3be90763a9&q="
     let OW_URL_BASE_ICON = "https://openweathermap.org/img/w/"
-    
     @IBOutlet weak var localidad: UITextField!
     @IBOutlet weak var tiempo: UILabel!
     @IBOutlet weak var image: UIImageView!
     
     @IBAction func consultar(_ sender: Any) {
-            consultarTiempo(localidad: localidad.text!)
+        consultarTiempo(localidad: localidad.text!)
+        
     }
     
     func consultarTiempo(localidad:String) {
@@ -40,8 +41,15 @@ class ViewController: UIViewController {
             if let urlIcono = URL(string: self.OW_URL_BASE_ICON+icono+".png" ) {
                 let datosIcono = try! Data(contentsOf: urlIcono)
                 let imagenIcono = UIImage(data: datosIcono)
+                OperationQueue.main.addOperation() {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    self.tiempo.text = descripcion
+                    self.image.image = imagenIcono
+                    }
+                
             }
         }
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         dataTask.resume()
     }}
 
